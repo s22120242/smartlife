@@ -125,7 +125,7 @@ git push -u origin main
 
 4. Agrega variables de entorno en Render:
    ```
-   JWT_SECRET=genera_una_clave_segura_aqui
+   JWT_SECRET=1f08f8b50a09b7a01d6ce697c3201d5f
    JWT_EXPIRES_IN=7d
    PORT=10000
    CORS_ORIGIN=*
