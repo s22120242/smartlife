@@ -86,7 +86,7 @@ export default function Modal({ open, onClose, title, children, dirty }: ModalPr
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
         onClick={(e) => { if (e.target === overlayRef.current) handleClose() }}
       >
-        <div ref={contentRef} className="bg-surface rounded-2xl p-6 w-full max-w-lg mx-4 shadow-xl">
+        <div ref={contentRef} className="bg-surface rounded-2xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[85vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white">{title}</h2>
             <button
