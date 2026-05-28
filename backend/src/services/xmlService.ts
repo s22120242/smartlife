@@ -1,8 +1,11 @@
 import { XMLBuilder, XMLParser } from 'fast-xml-parser'
 import { prisma } from '../utils/prisma'
 
+// Unidad 2 — XML: implementación de exportación e importación de datos en formato XML
+
 const XML_DECL = '<?xml version="1.0" encoding="UTF-8"?>\n'
 
+// Builder genera XML con formato legible desde objetos JS
 const builder = new (XMLBuilder as any)({
   format: true,
   indentBy: '  ',
@@ -12,12 +15,14 @@ const builder = new (XMLBuilder as any)({
     ['activities', 'schedules', 'habits', 'transports', 'activity', 'schedule', 'habit', 'transport'].includes(name),
 })
 
+// Parser convierte XML a objetos JS para su procesamiento
 const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '@_',
 })
 
 export const xmlService = {
+  // Exporta datos del usuario a XML (servicio web síncrono)
   async exportData(userId: string): Promise<string> {
     const [activities, schedules, habits, transports] = await Promise.all([
       prisma.activity.findMany({ where: { userId }, include: { category: true } }),
@@ -39,6 +44,7 @@ export const xmlService = {
     return XML_DECL + builder.build(data)
   },
 
+  // Importa datos desde XML y los guarda en la BD (servicio web asíncrono)
   async importData(userId: string, xml: string) {
     const parsed = parser.parse(xml)
     const data = parsed.export

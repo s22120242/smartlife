@@ -1,5 +1,8 @@
 import axios from 'axios'
 
+// Unidad 3 — AJAX: Cliente HTTP asíncrono con Axios
+// Todas las peticiones del frontend pasan por aquí
+
 const api = axios.create({
   baseURL: '/api/v1',
   headers: { 'Content-Type': 'application/json' },
@@ -8,6 +11,7 @@ const api = axios.create({
 let isRefreshing = false
 let pendingRequests: Array<{ resolve: (value: unknown) => void; reject: (reason: unknown) => void }> = []
 
+// Interceptor de request: inyecta el token JWT en cada petición
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {
@@ -16,6 +20,7 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// Interceptor de response: refresh automático si el token expiró
 api.interceptors.response.use(
   (res) => res,
   async (err) => {
@@ -24,6 +29,7 @@ api.interceptors.response.use(
     if (err.response?.status === 401 && !originalRequest._retry) {
       const refreshToken = localStorage.getItem('refreshToken')
 
+      // Si ya se está refrescando, encola las peticiones pendientes
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           pendingRequests.push({ resolve, reject })

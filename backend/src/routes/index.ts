@@ -16,6 +16,7 @@ import { prisma } from "../utils/prisma";
 
 const router = Router();
 
+// Seguridad: Rate Limiting — máximo 60 peticiones por minuto por IP
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 60,
@@ -26,10 +27,12 @@ const apiLimiter = rateLimit({
 
 router.use(apiLimiter);
 
+// Endpoint de salud del servidor
 router.get("/health", (_, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+// Servicio web síncrono: exporta todos los datos del usuario en JSON
 router.get("/export", authMiddleware, async (req, res) => {
   try {
     const userId = (req as any).userId;
@@ -51,16 +54,17 @@ router.get("/export", authMiddleware, async (req, res) => {
   }
 });
 
-router.use("/auth", authRoutes);
-router.use("/activities", activityRoutes);
-router.use("/schedule", scheduleRoutes);
-router.use("/scheduling", schedulingRoutes);
-router.use("/habits", habitRoutes);
-router.use("/statistics", statsRoutes);
-router.use("/categories", categoryRoutes);
-router.use("/transport", transportRoutes);
-router.use("/xml", xmlRoutes);
-router.use("/admin", adminRoutes);
-router.use("/weather", weatherRoutes);
+// Montaje de todas las rutas del servicio web REST
+router.use("/auth", authRoutes);         // Autenticación (login, register, refresh)
+router.use("/activities", activityRoutes); // CRUD de actividades
+router.use("/schedule", scheduleRoutes);   // CRUD de horarios fijos
+router.use("/scheduling", schedulingRoutes); // Motor de scheduling (asíncrono)
+router.use("/habits", habitRoutes);       // CRUD de hábitos
+router.use("/statistics", statsRoutes);    // Estadísticas (asíncrono)
+router.use("/categories", categoryRoutes); // Categorías
+router.use("/transport", transportRoutes); // CRUD de transporte
+router.use("/xml", xmlRoutes);            // XML (export/import) — Unidad 2
+router.use("/admin", adminRoutes);        // Panel de administración
+router.use("/weather", weatherRoutes);    // Clima externo (asíncrono)
 
 export default router;
