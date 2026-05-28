@@ -1,0 +1,12 @@
+{
+  "name": "Smart Life Organizer",
+  "short_name": "SmartLife",
+  "description": "Organizador personal inteligente para planificar y optimizar tu tiempo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#6C63FF",
+  "icons": [
+    { "src": "/icons.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

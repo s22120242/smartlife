@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  password     String
+  role         String   @default("USER")
+  profileImage String?
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  fixedSchedules FixedSchedule[]
+  activities     Activity[]
+  transports     Transport[]
+  habits         Habit[]
+  suggestions    Suggestion[]
+}
+
+model Category {
+  id    String @id
+  name  String
+  icon  String?
+  color String?
+
+  activities Activity[]
+}
+
+model FixedSchedule {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  day       String
+  startTime String
+  endTime   String
+  type      String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, day])
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  userId      String
+  categoryId  String
+  title       String
+  description String?
+  duration    Int
+  priority    String   @default("media")
+  deadline    DateTime?
+  startTime   String?
+  splittable  Boolean  @default(false)
+  status      String   @default("pendiente")
+  createdAt   DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([userId, priority, deadline])
+}
+
+model Transport {
+  id          String  @id @default(cuid())
+  userId      String
+  origin      String
+  destination String
+  duration    Int
+  day         String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Habit {
+  id              String    @id @default(cuid())
+  userId          String
+  title           String
+  streak          Int       @default(0)
+  target          Int       @default(1)
+  completed       Int       @default(0)
+  lastCompletedAt DateTime?
+  createdAt       DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model AdminLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  action    String
+  target    String?
+  targetId  String?
+  details   String?
+  createdAt DateTime @default(now())
+}
+
+model Suggestion {
+  id          String   @id @default(cuid())
+  userId      String
+  suggestion  String
+  type        String   @default("general")
+  read        Boolean  @default(false)
+  generatedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
