@@ -92,6 +92,59 @@ npm run test           # Ejecutar tests
 | 2 | XML (export/import con fast-xml-parser) | ✅ |
 | 3 | AJAX (Axios con interceptors y refresh token) | ✅ |
 | 4 | Servicios web síncronos y asíncronos (~40 endpoints REST) | ✅ |
-| 5 | Hosting en servidor externo | ❌ No implementado |
+| 5 | Hosting en servidor externo | ✅ Preparado para Render |
 
-**Hosting (Unidad 5):** El proyecto solo está corriendo en local. Hay guías de despliegue en `docs/publicacion.md` para Railway, Vercel + Render, pero **ninguna se ha ejecutado**. Consulta ese archivo si deseas publicarlo.
+## 9. Publicar en Render (gratis, sin tarjeta)
+
+### Requisitos
+- Cuenta en [GitHub](https://github.com)
+- Cuenta en [Render](https://render.com) (usando "Sign up with GitHub")
+
+### Pasos
+
+**1. Subir el proyecto a GitHub**
+
+```bash
+# Crea un repositorio en GitHub (vacío, sin README ni .gitignore)
+# Luego ejecuta:
+git remote add origin https://github.com/TU_USUARIO/smart-life-organizer.git
+git branch -M main
+git push -u origin main
+```
+
+**2. Crear Web Service en Render**
+1. En Render, haz clic en **"New +"** → **"Web Service"**
+2. Conecta tu repositorio de GitHub
+3. Configura:
+   - **Name:** `smart-life-organizer`
+   - **Root Directory:** *(déjalo vacío — el build script está en la raíz)*
+   - **Runtime:** `Node`
+   - **Build Command:** `chmod +x render-build.sh && ./render-build.sh`
+   - **Start Command:** `cd backend && npm start`
+   - **Plan:** **Free**
+
+4. Agrega variables de entorno en Render:
+   ```
+   JWT_SECRET=genera_una_clave_segura_aqui
+   JWT_EXPIRES_IN=7d
+   PORT=10000
+   CORS_ORIGIN=*
+   NODE_ENV=production
+   ```
+
+5. Haz clic en **"Deploy Web Service"**
+
+**3. Esperar el deploy**
+
+Render tarda ~3-5 min en construir y desplegar. Al terminar asigna una URL como:
+```
+https://smart-life-organizer.onrender.com
+```
+
+**4. Usuarios de prueba**
+| Email | Contraseña | Rol |
+|-------|-----------|------|
+| `demo@example.com` | `123456` | USER |
+| `admin@example.com` | `admin123` | ADMIN |
+
+**Nota:** En el plan Free de Render, el servicio se duerme tras 15 min de inactividad. Al recibir una petición tarda ~30s en reactivarse. Los datos de SQLite se pierden al reiniciar. Para persistencia real, migrar a PostgreSQL (ver `docs/publicacion.md`).

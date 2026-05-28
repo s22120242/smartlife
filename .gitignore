@@ -6,3 +6,6 @@ dist/
 .DS_Store
 backend/public/
 backend/dev.db
+*.err
+backend.log
+frontend.log

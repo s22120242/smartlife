@@ -61,4 +61,11 @@
 
 ## Unidad 5 — Hosting
 
-**No implementado.** Pendiente de configurar.
+**Preparado para Render.** Pendiente de hacer push y conectar.
+
+| Archivo | Descripción |
+|---------|-------------|
+| `render-build.sh` | Script de build que compila frontend y backend |
+| `backend/src/server.ts` | Sirve frontend estático en producción (`app.use(express.static)`) |
+| `backend/.env.example` | Variables de entorno de ejemplo (sin secretos reales) |
+| `docs/instrucciones-ejecucion.md` | Pasos detallados para deploy en Render |
