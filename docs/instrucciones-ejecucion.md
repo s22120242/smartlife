@@ -120,7 +120,7 @@ git push -u origin main
    - **Root Directory:** *(déjalo vacío — el build script está en la raíz)*
    - **Runtime:** `Node`
    - **Build Command:** `chmod +x render-build.sh && ./render-build.sh`
-   - **Start Command:** `cd backend && npm start`
+   - **Start Command:** `cd backend && bash start.sh`
    - **Plan:** **Free**
 
 4. Agrega variables de entorno en Render:
