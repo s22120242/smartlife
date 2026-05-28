@@ -89,6 +89,9 @@ export const authService = {
   },
 
   async deleteAccount(userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new Error("Usuario no encontrado");
+    if (user.role === "ADMIN") throw new Error("Un administrador no puede eliminar su propia cuenta");
     await prisma.user.delete({ where: { id: userId } });
   },
 

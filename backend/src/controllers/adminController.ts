@@ -79,6 +79,9 @@ export const adminController = {
   async deleteUser(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
+      if (id === req.userId) {
+        return res.status(400).json({ error: "Un administrador no puede eliminarse a sí mismo" });
+      }
       const user = await prisma.user.findUnique({ where: { id } });
       if (!user) {
         return res.status(404).json({ error: "Usuario no encontrado" });

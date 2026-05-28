@@ -23,8 +23,7 @@ async function main() {
     console.log(`Seed: ${catCount} categorías ya existen`);
   }
 
-  const userCount = await prisma.user.count();
-  if (userCount === 0) {
+  if (!await prisma.user.findUnique({ where: { email: "demo@example.com" } })) {
     const password = await bcrypt.hash("123456", 10);
     const user = await prisma.user.create({
       data: {
@@ -34,17 +33,6 @@ async function main() {
       },
     });
     console.log("Seed: Usuario demo creado (demo@example.com / 123456)");
-
-    const adminPassword = await bcrypt.hash("admin123", 10);
-    await prisma.user.create({
-      data: {
-        name: "Admin",
-        email: "admin@example.com",
-        password: adminPassword,
-        role: "ADMIN",
-      },
-    });
-    console.log("Seed: Usuario admin creado (admin@example.com / admin123)");
 
     await prisma.fixedSchedule.createMany({
       data: [
@@ -100,8 +88,22 @@ async function main() {
       ],
     });
     console.log("Seed: Transportes demo creados");
+  }
+
+  // Siempre asegura que el admin existe (útil si fue eliminado)
+  if (!await prisma.user.findUnique({ where: { email: "admin@example.com" } })) {
+    const adminPassword = await bcrypt.hash("admin123", 10);
+    await prisma.user.create({
+      data: {
+        name: "Admin",
+        email: "admin@example.com",
+        password: adminPassword,
+        role: "ADMIN",
+      },
+    });
+    console.log("Seed: Usuario admin recreado (admin@example.com / admin123)");
   } else {
-    console.log(`Seed: ${userCount} usuarios ya existen, se omite`);
+    console.log(`Seed: Admin ya existe, se omite`);
   }
 }
 
