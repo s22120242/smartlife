@@ -13,7 +13,6 @@ cd ../backend
 npm install --include=dev
 npm run build
 npx prisma generate
-npx prisma migrate deploy
 chmod +x start.sh
 
 echo "=== Build completo ==="
