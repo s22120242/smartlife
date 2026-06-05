@@ -8,31 +8,43 @@ export default function MainLayout() {
   const { isOpen, open, close } = useSidebarStore()
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
+  const gestureActive = useRef(false)
 
   useEffect(() => {
-    const handler = (e: TouchEvent) => {
+    const startHandler = (e: TouchEvent) => {
       const touch = e.touches[0]
-      if (!touch) return
-      if (touch.clientX < 40 && !isOpen) {
+      if (!touch || isOpen) return
+      if (touch.clientX < 40) {
         touchStartX.current = touch.clientX
         touchStartY.current = touch.clientY
+        gestureActive.current = true
       }
     }
     const moveHandler = (e: TouchEvent) => {
+      if (!gestureActive.current) return
       const touch = e.touches[0]
-      if (!touch || touchStartX.current === null) return
+      if (!touch) return
       const deltaX = touch.clientX - touchStartX.current
       const deltaY = Math.abs(touch.clientY - touchStartY.current)
-      if (deltaX > 60 && deltaX > deltaY * 1.5 && !isOpen) {
+      if (deltaY > Math.abs(deltaX)) {
+        gestureActive.current = false
+        return
+      }
+      if (deltaX > 70) {
+        gestureActive.current = false
         open()
-        touchStartX.current = 0
       }
     }
-    window.addEventListener('touchstart', handler, { passive: true })
+    const endHandler = () => {
+      gestureActive.current = false
+    }
+    window.addEventListener('touchstart', startHandler, { passive: true })
     window.addEventListener('touchmove', moveHandler, { passive: true })
+    window.addEventListener('touchend', endHandler, { passive: true })
     return () => {
-      window.removeEventListener('touchstart', handler)
+      window.removeEventListener('touchstart', startHandler)
       window.removeEventListener('touchmove', moveHandler)
+      window.removeEventListener('touchend', endHandler)
     }
   }, [isOpen, open])
 
