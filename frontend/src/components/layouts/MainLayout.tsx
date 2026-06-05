@@ -7,6 +7,7 @@ import { useSidebarStore } from '@/store/sidebarStore'
 export default function MainLayout() {
   const { isOpen, open, close } = useSidebarStore()
   const touchStartX = useRef(0)
+  const touchStartY = useRef(0)
 
   useEffect(() => {
     const handler = (e: TouchEvent) => {
@@ -14,12 +15,15 @@ export default function MainLayout() {
       if (!touch) return
       if (touch.clientX < 40 && !isOpen) {
         touchStartX.current = touch.clientX
+        touchStartY.current = touch.clientY
       }
     }
     const moveHandler = (e: TouchEvent) => {
       const touch = e.touches[0]
       if (!touch || touchStartX.current === null) return
-      if (touch.clientX - touchStartX.current > 60 && !isOpen) {
+      const deltaX = touch.clientX - touchStartX.current
+      const deltaY = Math.abs(touch.clientY - touchStartY.current)
+      if (deltaX > 60 && deltaX > deltaY * 1.5 && !isOpen) {
         open()
         touchStartX.current = 0
       }

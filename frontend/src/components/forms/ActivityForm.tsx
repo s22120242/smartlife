@@ -77,6 +77,7 @@ export default function ActivityForm({ onSubmit, onCancel, initial, onDirtyChang
   const status = watch('status')
   const currentDate = watch('deadline')
   const currentTime = watch('startTime')
+  const selectedCategoryId = watch('categoryId')
 
   useEffect(() => {
     onDirtyChange?.(isDirty)
@@ -170,13 +171,13 @@ export default function ActivityForm({ onSubmit, onCancel, initial, onDirtyChang
               <label
                 key={cat.id}
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border cursor-pointer transition-all ${
-                  getValues('categoryId') === cat.id
+                  selectedCategoryId === cat.id
                     ? 'text-white scale-[1.02]'
                     : 'border-gray-700 bg-dark text-gray-400 hover:border-gray-500'
                 }`}
                 style={{
-                  borderColor: getValues('categoryId') === cat.id ? cat.color : undefined,
-                  backgroundColor: getValues('categoryId') === cat.id ? `${cat.color}20` : undefined,
+                  borderColor: selectedCategoryId === cat.id ? cat.color : undefined,
+                  backgroundColor: selectedCategoryId === cat.id ? `${cat.color}20` : undefined,
                 }}
               >
                 <input

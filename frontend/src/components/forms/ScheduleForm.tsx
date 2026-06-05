@@ -59,6 +59,7 @@ export default function ScheduleForm({ onSubmit, onCancel, initial, onDirtyChang
   const watchedDays = watch('days')
   const startTime = watch('startTime')
   const endTime = watch('endTime')
+  const scheduleType = watch('type')
 
   useEffect(() => {
     onDirtyChange?.(isDirty)
@@ -289,13 +290,13 @@ export default function ScheduleForm({ onSubmit, onCancel, initial, onDirtyChang
             <label
               key={t.value}
               className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border cursor-pointer transition-all ${
-                watch('type') === t.value
+                scheduleType === t.value
                   ? 'text-white scale-[1.02]'
                   : 'border-gray-700 bg-dark text-gray-400 hover:border-gray-500'
               }`}
               style={{
-                borderColor: watch('type') === t.value ? t.color : undefined,
-                backgroundColor: watch('type') === t.value ? `${t.color}20` : undefined,
+                borderColor: scheduleType === t.value ? t.color : undefined,
+                backgroundColor: scheduleType === t.value ? `${t.color}20` : undefined,
               }}
             >
               <input
